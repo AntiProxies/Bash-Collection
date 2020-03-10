@@ -4,7 +4,7 @@
 LOGS=1
 
 ### Default Time Format 
-TIME_FORMAT='%d-%b-%Y-%H%M%S'
+TIME_FORMAT='%d/%m/%Y-%H%M%S'
 
 ### Setup Dump And Log Directory 
 MYSQLDUMPPATH=/var/www/mysqldump
@@ -80,10 +80,7 @@ while [ "$#" -gt 0 ]; do
     shift
 done
 
-### Check if /usr/bin/pigz is executable
-### if yes, use pigz instead of gzip to compress with multithreading support
-
-### Make Sure Bins Exists 
+### Checks if Bins Exists 
 verify_bins() {
 
     if command_exists pigz; then
@@ -119,13 +116,13 @@ verify_bins() {
     fi
 }
 
-### Check if .my.cnf exit
+### Check if .my.cnf exist
 if [ ! -f ~/.my.cnf ] && [ ! -f /etc/mysql/conf.d/my.cnf ] && [ ! -f /etc/mysql/my.cnf ] && [ ! -d /etc/psa ]; then
     echo "Error: ~/.my.cnf not found"
     exit 0
 fi
 
-### Make Sure We Can Connect To The Server 
+### Checks MYSQL connection
 verify_mysql_connection() {
     if ! {
         $MYSQLADMIN $MSQL_USER ping | grep -q 'alive' >/dev/null
@@ -135,7 +132,7 @@ verify_mysql_connection() {
     fi
 }
 
-### Make A Backup 
+### Starts the backup 
 backup_mysql() {
     local DBS
     DBS="$($MYSQL $MSQL_USER -Bse 'show databases')"
